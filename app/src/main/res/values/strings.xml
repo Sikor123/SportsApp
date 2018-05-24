@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SportsApp</string>
+    <string name="sekundy">100</string>
+    <string name="licznik">01:02</string>
+</resources>
