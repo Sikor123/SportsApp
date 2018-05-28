@@ -10,20 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.sql.Time;
-
 
 public class Start extends AppCompatActivity {
 
-
+    private static final String TAG = "BroadcastTest";
+    private Intent clockIntent;
     TextView tx;
 
-    private BroadcastReceiver broadcast = new BroadcastReceiver(){
-        @Override
-        public void onReceive(Context arg0, Intent arg1) {
-            //Tutaj tak samo jak w poprzednim przykładzie.
-        }
-    };
 
     private IntentFilter filter =
             new IntentFilter("com.example.broadcastsample.PRZYKLADOWY");
@@ -31,38 +24,42 @@ public class Start extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        clockIntent = new Intent(this, ClockService.class);
         setContentView(R.layout.start_activity);
         Intent intent = getIntent();
         int czas = intent.getIntExtra("czas", 0);
-
         tx = (TextView) findViewById(R.id.time);
         tx.setText(Integer.toString(czas));
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(broadcast, filter);
-        tx = (TextView) findViewById(R.id.time);
-        Intent intent = getIntent();
-        int czas = intent.getIntExtra("czas", 0);
-        long start = System.currentTimeMillis();
-        while (czas > 0) {
+        Log.d("TAG", "jestem1");
+        startService(clockIntent);
+        registerReceiver(broadcastReceiver, new IntentFilter(ClockService.BROADCAST_ACTION));
 
-            if (System.currentTimeMillis() - start >= 1000) {
-                Log.i("wszedlem" , "sekunda");
-                start = System.currentTimeMillis();
-                czas--;
-                tx.setText(Integer.toString(czas));
-
-            }
-        }
     }
 
     public void onPause() {
-        unregisterReceiver(broadcast);
-        // trzeba zawsze po sobie posprzątać w tym przypadku wyrejestrować receiver.
         super.onPause();
+        unregisterReceiver(broadcastReceiver);
+        stopService(clockIntent);
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(intent);
+        }
+    };
+
+    private void updateUI(Intent intent) {
+        String time = intent.getStringExtra("counter");
+        Log.d(TAG, time);
+        tx.setText(time);
     }
 }
 

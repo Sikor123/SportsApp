@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".Setting"></activity>
         <activity android:name=".Start"></activity>
+        <service android:name=".ClockService"></service>
     </application>
 
 </manifest>
