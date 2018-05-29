@@ -43,11 +43,17 @@ public class Setting extends AppCompatActivity implements View.OnClickListener{
             case R.id.scplus:
                 counter++;
                 tx.setText(Integer.toString(counter));
+                Log.i("wszedlem" , "+1");
                 break;
             case R.id.start:
+
+
                 Intent intent = new Intent(this , Start.class);
                 intent.putExtra("czas" , counter);
+                counter = 0;
+                Log.i("wszedlem" , "0");
                 startActivity(intent);
+                tx.setText("0");
                 break;
         }
     }

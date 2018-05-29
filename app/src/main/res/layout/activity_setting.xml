@@ -23,9 +23,11 @@
                 android:layout_width="8dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="100px"
                 android:gravity="center"
-                android:text="-" />
+                android:text="-"
+                android:textSize="100px" />
+
+
 
             <TextView
                 android:id="@+id/seconds"
@@ -35,6 +37,8 @@
                 android:text="0"
                 android:textSize="100px"
                 android:gravity="center"/>
+
+
 
             <Button
                 android:id="@+id/scplus"

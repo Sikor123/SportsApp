@@ -1,33 +1,32 @@
 package com.example.bartek.sportsapp;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
-public class Start extends AppCompatActivity {
+public class Start extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "BroadcastTest";
-    private Intent clockIntent;
+
     TextView tx;
-
-
-    private IntentFilter filter =
-            new IntentFilter("com.example.broadcastsample.PRZYKLADOWY");
+    Button bt;
+    MyTask myTask;
+    Intent intentInit;
+    int czas;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        clockIntent = new Intent(this, ClockService.class);
         setContentView(R.layout.start_activity);
-        Intent intent = getIntent();
-        int czas = intent.getIntExtra("czas", 0);
+        intentInit = getIntent();
+        bt = (Button)findViewById(R.id.wstecz1) ;
+
+        czas = intentInit.getIntExtra("czas", 0);
         tx = (TextView) findViewById(R.id.time);
         tx.setText(Integer.toString(czas));
 
@@ -37,29 +36,35 @@ public class Start extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("TAG", "jestem1");
-        startService(clockIntent);
-        registerReceiver(broadcastReceiver, new IntentFilter(ClockService.BROADCAST_ACTION));
+
+        tx = (TextView) findViewById(R.id.time);
+        Log.i("wszedlem" , "1");
+        myTask = new MyTask(Start.this , tx , czas);
+        bt.setOnClickListener(this );
+        Log.i("wszedlem" , "2");
+        myTask.execute();
+        Log.i("wszedlem" , "3");
 
     }
 
     public void onPause() {
         super.onPause();
-        unregisterReceiver(broadcastReceiver);
-        stopService(clockIntent);
+
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateUI(intent);
+    @Override
+    public void onClick(View v ) {
+        switch(v.getId()){
+            case R.id.wstecz1:
+
+                Log.i("wszedlem" , "0");
+                myTask.cancel(false);
+                finish();
+                break;
+
         }
-    };
 
-    private void updateUI(Intent intent) {
-        String time = intent.getStringExtra("counter");
-        Log.d(TAG, time);
-        tx.setText(time);
     }
-}
 
+
+}
